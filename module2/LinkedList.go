@@ -10,6 +10,7 @@ type Node[T any] struct {
 type LinkedList[T any] struct {
 	Head *Node[T]
 	Tail *Node[T]
+	size int
 }
 
 func (l *LinkedList[T]) addToStart(value T) {
@@ -21,6 +22,8 @@ func (l *LinkedList[T]) addToStart(value T) {
 
 	node.Next = l.Head
 	l.Head = node
+
+	l.size++
 }
 
 func (l *LinkedList[T]) addToEnd(value T) {
@@ -32,10 +35,12 @@ func (l *LinkedList[T]) addToEnd(value T) {
 
 	l.Tail.Next = node
 	l.Tail  = node
+	l.size++
 }
 
 func (l *LinkedList[T]) delete(target int) T {
 	node := l.Head
+	i := 0
 	for (node != nil) {
 		if
 	}
