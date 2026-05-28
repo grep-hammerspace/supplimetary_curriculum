@@ -134,6 +134,7 @@ func (l *LinkedList[T]) GetFirst() (T, bool) {
 	// Return head value and update head pointer to next node
 	valueToReturn := l.Head.Value
 	l.Head = l.Head.Next
+	l.size--
 	return valueToReturn, true
 }
 
@@ -163,18 +164,31 @@ func (l *LinkedList[T]) GetLast() (T, bool) {
 
 	valueToReturn := currentNode.Next.Value
 	l.Tail = currentNode
+	//Dereference the old tail to allow GC to clean it up
+	l.Tail.Next = nil
+	l.size--
 	return valueToReturn, true
 }
 
 // Return value and true if found, false if not
-func (l *LinkedList[T]) Peek() (T, bool) {
+func (l *LinkedList[T]) PeekFirst() (T, bool) {
 
 	var dummy T
-	if l.Head.Value == nil {
+	// Empty LinkedList
+	if l.Head == nil {
 		return dummy, false
 	}
 	return l.Head.Value, true
 
+}
+
+func (l *LinkedList[T]) PeekLast() (T, bool) {
+	var dummy T
+	// Empty LinkedList
+	if l.Head == nil {
+		return dummy, false
+	}
+	return l.Tail.Value, true
 }
 
 func PrintList[T any](l *LinkedList[T]) {

@@ -7,13 +7,17 @@ type Queue[T any] struct {
 }
 
 func (q *Queue[T]) Enqueue(value T) {
-	q.Elements.AddToStart(value)
+	q.Elements.AddToEnd(value)
 }
 
 func (q *Queue[T]) Deque() (T, bool) {
-	return q.Elements.GetLast()
+	return q.Elements.GetFirst()
 }
 
 func (q *Queue[T]) Peek() (T, bool) {
-	return q.Elements.Peek()
+	return q.Elements.PeekFirst()
+}
+
+func (q *Queue[T]) Size() int {
+	return q.Elements.Size()
 }

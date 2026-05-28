@@ -6,16 +6,19 @@ type Stack[T any] struct {
 	Elements ll.LinkedList[T]
 }
 
-func (q *Stack[T]) Push(value T) {
-	q.Elements.AddToEnd(value)
+func (s *Stack[T]) Push(value T) {
+	s.Elements.AddToEnd(value)
 }
 
 // Returns (firstElement, true) if element exists, (dummyValue,false) otherwise
-func (q *Stack[T]) Pop() (T, bool) {
-	return q.Elements.GetFirst()
+func (s *Stack[T]) Pop() (T, bool) {
+	return s.Elements.GetLast()
 }
 
 // Returns (copy of first element, true) if element exists, (dummyValue,false) otherwise
-func (q *Stack[T]) Peek() (T, bool) {
-	return q.Elements.Peek()
+func (s *Stack[T]) Peek() (T, bool) {
+	return s.Elements.PeekLast()
+}
+func (s *Stack[T]) Size() int {
+	return s.Elements.Size()
 }
