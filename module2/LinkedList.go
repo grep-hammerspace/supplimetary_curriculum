@@ -18,11 +18,10 @@ func (l *LinkedList[T]) addToStart(value T) {
 	if l.Head == nil {
 		l.Head = node
 		l.Tail = node
+	} else {
+		node.Next = l.Head
+		l.Head = node
 	}
-
-	node.Next = l.Head
-	l.Head = node
-
 	l.size++
 }
 
@@ -31,10 +30,11 @@ func (l *LinkedList[T]) addToEnd(value T) {
 	if l.Tail == nil {
 		l.Head = node
 		l.Tail = node
+	} else {
+		l.Tail.Next = node
+		l.Tail = node
 	}
 
-	l.Tail.Next = node
-	l.Tail = node
 	l.size++
 }
 
@@ -47,12 +47,24 @@ func (l *LinkedList[T]) delete(target int) (T, error) {
 
 	// we are deleting head
 	if target == 0 {
+
+		if l.Head == l.Tail {
+			// ie we are deleting the only node
+			valueToReturn := l.Head.Value
+			l.Head = nil
+			l.Tail = nil
+			l.size--
+			return valueToReturn, nil
+		}
+
+		// we can just dereference head and let the GC clean it up
 		valueToReturn := l.Head.Value
 		l.Head = l.Head.Next
+		l.size--
 		return valueToReturn, nil
 	}
 
-	// Find node we are deleting
+	//  if not deleting head, find node we are deleting
 	currentNode := l.Head
 	for i := 0; i < target-1; i++ {
 		currentNode = currentNode.Next
@@ -65,10 +77,10 @@ func (l *LinkedList[T]) delete(target int) (T, error) {
 	if nodeToDelete.Next == nil {
 		currentNode.Next = nil
 		l.Tail = currentNode
+	} else {
+		// otherwise just make the pointer skip over what we are deleting
+		currentNode.Next = nodeToDelete.Next
 	}
-
-	// otherwise just make the pointer skip over what we are deleting
-	currentNode.Next = nodeToDelete.Next
 
 	l.size--
 	return valueToReturn, nil
