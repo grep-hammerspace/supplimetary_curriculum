@@ -52,7 +52,7 @@ func binarySearch(arr []int, target int) int {
 	hi := len(arr) - 1
 	lo := 0
 
-	for lo < hi {
+	for lo <= hi {
 		mid := lo + (hi-lo)/2
 		if arr[mid] > target {
 			// target is in the left half
