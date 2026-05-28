@@ -1,6 +1,8 @@
 package linkedlist
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Node[T any] struct {
 	Value T
@@ -109,6 +111,70 @@ func (l *LinkedList[T]) Reverse() {
 
 func (l *LinkedList[T]) Size() int {
 	return l.size
+}
+
+// Returns (firstElement, true) if element exists, (dummyValue,false) otherwise
+func (l *LinkedList[T]) GetFirst() (T, bool) {
+
+	// Empty LinkedList
+	if l.Head == nil {
+		var dummy T
+		return dummy, false
+	}
+
+	// One element only
+	if l.Head == l.Tail {
+		valueToReturn := l.Head.Value
+		l.Head = nil
+		l.Tail = nil
+		l.size--
+		return valueToReturn, true
+	}
+
+	// Return head value and update head pointer to next node
+	valueToReturn := l.Head.Value
+	l.Head = l.Head.Next
+	return valueToReturn, true
+}
+
+// Returns (firstElement, true) if element exists, (dummyValue,false) otherwise
+func (l *LinkedList[T]) GetLast() (T, bool) {
+
+	// Empty LinkedList
+	if l.Head == nil {
+		var dummy T
+		return dummy, false
+	}
+
+	// One element only
+	if l.Head == l.Tail {
+		valueToReturn := l.Head.Value
+		l.Head = nil
+		l.Tail = nil
+		l.size--
+		return valueToReturn, true
+	}
+
+	// Iterate up to second last
+	currentNode := l.Head
+	for currentNode.Next.Next != nil {
+		currentNode = currentNode.Next
+	}
+
+	valueToReturn := currentNode.Next.Value
+	l.Tail = currentNode
+	return valueToReturn, true
+}
+
+// Return value and true if found, false if not
+func (l *LinkedList[T]) Peek() (T, bool) {
+
+	var dummy T
+	if l.Head.Value == nil {
+		return dummy, false
+	}
+	return l.Head.Value, true
+
 }
 
 func PrintList[T any](l *LinkedList[T]) {
