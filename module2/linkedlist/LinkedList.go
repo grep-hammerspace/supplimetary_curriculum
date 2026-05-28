@@ -1,4 +1,4 @@
-package main
+package linkedlist
 
 import "fmt"
 
@@ -13,7 +13,7 @@ type LinkedList[T any] struct {
 	size int
 }
 
-func (l *LinkedList[T]) addToStart(value T) {
+func (l *LinkedList[T]) AddToStart(value T) {
 	node := &Node[T]{value, nil}
 	if l.Head == nil {
 		l.Head = node
@@ -25,7 +25,7 @@ func (l *LinkedList[T]) addToStart(value T) {
 	l.size++
 }
 
-func (l *LinkedList[T]) addToEnd(value T) {
+func (l *LinkedList[T]) AddToEnd(value T) {
 	node := &Node[T]{value, nil}
 	if l.Tail == nil {
 		l.Head = node
@@ -38,7 +38,7 @@ func (l *LinkedList[T]) addToEnd(value T) {
 	l.size++
 }
 
-func (l *LinkedList[T]) delete(target int) (T, error) {
+func (l *LinkedList[T]) Delete(target int) (T, error) {
 	// Handle empty list or invalid index
 	if l.Head == nil || target < 0 || target >= l.size {
 		var zero T
@@ -87,7 +87,7 @@ func (l *LinkedList[T]) delete(target int) (T, error) {
 }
 
 // Reverse order in place, without creating a new list, just by manipulating next pointers
-func (l *LinkedList[T]) reverse() {
+func (l *LinkedList[T]) Reverse() {
 	if l.Head == nil || l.Head.Next == nil {
 		return // Nothing to reverse (empty or single-node list)
 	}
@@ -107,7 +107,11 @@ func (l *LinkedList[T]) reverse() {
 	l.Head = previous
 }
 
-func printList[T any](l *LinkedList[T]) {
+func (l *LinkedList[T]) Size() int {
+	return l.size
+}
+
+func PrintList[T any](l *LinkedList[T]) {
 	current := l.Head
 	for current != nil {
 		fmt.Printf("%v ", current.Value)

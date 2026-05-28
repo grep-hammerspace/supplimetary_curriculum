@@ -23,7 +23,7 @@ After adding 1 to end:
 1 
 Size: 1, Head: 1, Tail: 1
 
-After adding 1, 2, 3,4,5 to end:
+After adding 2, 3,4,5 to end:
 1 2 3 4 5 
 Size: 5, Head: 1, Tail: 5
 
@@ -43,4 +43,5 @@ Size: 4, Head: 1, Tail: 5
 After reversing:
 5 4 2 1 
 Size: 4, Head: 5, Tail: 1
+
 ```
