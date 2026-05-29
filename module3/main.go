@@ -30,21 +30,6 @@ func main() {
 }
 
 func areBracketsBalanced(brackets string, mappings map[int32]int32) bool {
-	// Unicode pointers for the brackets as int32 because runes are aliases for int32
-	// This is ok becuase we only care about ASCII characters here
-	var curly_open int32 = 123
-	var square_open int32 = 91
-	var round_open int32 = 40
-	var round_close int32 = 41
-	var square_close int32 = 93
-	var curly_close int32 = 125
-	openCloseMappings := make(map[int32]int32)
-	openCloseMappings[curly_open] = curly_close
-	openCloseMappings[curly_close] = curly_open
-	openCloseMappings[square_open] = square_close
-	openCloseMappings[square_close] = square_open
-	openCloseMappings[round_open] = round_close
-	openCloseMappings[round_close] = round_open
 
 	// Create a slice of the inputs and a stack to match them
 	bracketsAsSlice := []rune(brackets)
@@ -58,7 +43,7 @@ func areBracketsBalanced(brackets string, mappings map[int32]int32) bool {
 		currentRune := bracketsAsSlice[i]
 		topOfStack, _ := runeStack.Peek()
 
-		if openCloseMappings[currentRune] == topOfStack {
+		if mappings[currentRune] == topOfStack {
 			runeStack.Pop()
 		} else {
 			runeStack.Push(currentRune)
