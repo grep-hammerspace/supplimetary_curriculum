@@ -26,15 +26,20 @@ func NewHashTable[K comparable, V any]() *HashTable[K, V] {
 	}
 }
 
-func (h *HashTable[K, V]) Put(key K, value V) {
+func (h *HashTable[K, V]) Put(key K, value V) error {
 	// Determine bucket
 	keyHash := hash(key)
 	bucketNumber := keyHash % 16
-
-	//write to bucket
 	bucket := h.Buckets[bucketNumber]
+
+	for _, node := range bucket {
+		if node.Key == key {
+			return fmt.Errorf("Cannot put duplicate key")
+		}
+	}
 	newHashNode := HashNode[K, V]{key, value, keyHash}
 	h.Buckets[bucketNumber] = append(bucket, newHashNode)
+	return nil
 }
 
 func (h *HashTable[K, V]) Get(key K) (V, error) {
@@ -67,7 +72,8 @@ func (h *HashTable[K, V]) Remove(key K) error {
 	return fmt.Errorf("No such key found")
 }
 
-func (h *HashTable[K, V]) toString() string {
+// Naive way of printing key value pairs, probably wont work for more complex types
+func (h *HashTable[K, V]) Stringify() string {
 	var buffer bytes.Buffer
 
 	for _, bucket := range h.Buckets {
@@ -78,7 +84,6 @@ func (h *HashTable[K, V]) toString() string {
 			buffer.Write([]byte("\n"))
 		}
 	}
-
 	return buffer.String()
 }
 
