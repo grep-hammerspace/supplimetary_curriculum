@@ -43,7 +43,6 @@ func TestPopRemovesAllElements(t *testing.T) {
 	s.Pop()
 	s.Pop()
 	s.Pop()
-	z
 	if s.Size() != 0 {
 		t.Errorf("Expected size 0, got %d", s.Size())
 	}
