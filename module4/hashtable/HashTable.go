@@ -12,6 +12,7 @@ type HashTable[K string, V any] struct {
 	Buckets    []ll.LinkedList[HashNode[string, V]]
 	LoadFactor float64
 	Capacity   uint32 // To allow bucket computation without type conversion
+	Size       uint32
 }
 
 type HashNode[K string, V any] struct {
@@ -27,8 +28,9 @@ func New[K string, V any]() *HashTable[K, V] {
 	}
 	return &HashTable[K, V]{
 		Buckets:    buckets,
-		LoadFactor: 1.0,
+		LoadFactor: 1,
 		Capacity:   16,
+		Size:       0,
 	}
 }
 
@@ -45,7 +47,7 @@ func (h *HashTable[K, V]) Put(key string, value V) {
 		Hash:  keyHash,
 	}
 
-	// Traverse the rest of the linked list and check for dup keys in case of an update
+	// Traverse the rest of the linked list and check for duplicate keys in case of an update
 	for current != nil {
 		if current.Value.Key == key {
 			current.Value = newHashNode
@@ -56,7 +58,9 @@ func (h *HashTable[K, V]) Put(key string, value V) {
 	}
 
 	//New values are added to end
+	h.Size++
 	h.Buckets[bucketNumber].AddToEnd(newHashNode)
+	h.growIfNecessary()
 }
 
 func (h *HashTable[K, V]) Get(key string) (V, error) {
@@ -74,8 +78,8 @@ func (h *HashTable[K, V]) Get(key string) (V, error) {
 			current = current.Next
 		}
 	}
-
-	return *new(V), fmt.Errorf("No such key found")
+	var zero V
+	return zero, fmt.Errorf("No such key found")
 }
 
 func (h *HashTable[K, V]) Remove(key string) error {
@@ -98,6 +102,7 @@ func (h *HashTable[K, V]) Remove(key string) error {
 
 	if found {
 		h.Buckets[bucketNumber].Delete(deleteIndex)
+		h.Size--
 		return nil
 	} else {
 		return fmt.Errorf("No such key found")
@@ -125,4 +130,26 @@ func hash(key string) uint32 {
 	h := fnv.New32a()
 	h.Write([]byte(key))
 	return h.Sum32()
+}
+
+func (h *HashTable[K, V]) growIfNecessary() {
+	if float64(h.Size)/float64(h.Capacity) > h.LoadFactor {
+
+		newCapacity := h.Capacity * 2
+		newBuckets := make([]ll.LinkedList[HashNode[string, V]], newCapacity)
+
+		// Iterate over everything and write to new bucket.
+		for _, bucket := range h.Buckets {
+			current := bucket.Head
+			for current != nil {
+				keyHash := current.Value.Hash
+				bucketNumber := keyHash % newCapacity
+				newBuckets[bucketNumber].AddToEnd(current.Value)
+				current = current.Next
+			}
+		}
+
+		h.Buckets = newBuckets
+		h.Capacity = newCapacity
+	}
 }

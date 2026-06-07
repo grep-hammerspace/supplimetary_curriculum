@@ -130,7 +130,7 @@ func TestRemoveAllKeys(t *testing.T) {
 
 func TestCollisionsGetAndPut(t *testing.T) {
 	ht := New[string, int]()
-	// Insert enough keys to statistically guarantee some collisions
+	// Insert enough keys to guarantee some collisions
 	for i := 0; i < 32; i++ {
 		key := fmt.Sprintf("key%d", i)
 		ht.Put(key, i*10)
@@ -146,13 +146,16 @@ func TestCollisionsGetAndPut(t *testing.T) {
 
 func TestCollisionRemove(t *testing.T) {
 	ht := New[string, int]()
+	//Put 32 keys
 	for i := 0; i < 32; i++ {
 		ht.Put(fmt.Sprintf("key%d", i), i)
 	}
+
 	// Remove every other key
 	for i := 0; i < 32; i += 2 {
 		ht.Remove(fmt.Sprintf("key%d", i))
 	}
+
 	// Removed keys should be gone
 	for i := 0; i < 32; i += 2 {
 		if _, err := ht.Get(fmt.Sprintf("key%d", i)); err == nil {
@@ -165,5 +168,43 @@ func TestCollisionRemove(t *testing.T) {
 		if err != nil || val != i {
 			t.Errorf("Expected key%d=%d to survive, got (%d, %v)", i, i, val, err)
 		}
+	}
+}
+
+// --------------- GROWTH ----------------
+func TestGrowthCapacityDoubles(t *testing.T) {
+	ht := New[string, int]()
+	initialCapacity := ht.Capacity // 16
+
+	// Insert enough elements to trigger a grow (load factor 1.0, so 17 elements)
+	for i := 0; i < int(initialCapacity)+1; i++ {
+		ht.Put(fmt.Sprintf("key%d", i), i)
+	}
+
+	if ht.Capacity != initialCapacity*2 {
+		t.Errorf("Expected capacity to double to %d after grow, got %d", initialCapacity*2, ht.Capacity)
+	}
+}
+
+func TestGrowthSizeTrackedCorrectly(t *testing.T) {
+	ht := New[string, int]()
+
+	for i := 0; i < 20; i++ {
+		ht.Put(fmt.Sprintf("key%d", i), i)
+	}
+
+	if ht.Size != 20 {
+		t.Errorf("Expected Size=20 after 20 inserts, got %d", ht.Size)
+	}
+}
+
+func TestGrowthRemoveDoesntDecrementsSize(t *testing.T) {
+	ht := New[string, int]()
+	ht.Put("apple", 1)
+	ht.Put("banana", 2)
+	ht.Remove("apple")
+
+	if ht.Size != 1 {
+		t.Errorf("Expected Size=1 after remove, got %d", ht.Size)
 	}
 }
