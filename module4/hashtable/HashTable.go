@@ -56,7 +56,7 @@ func (h *HashTable[K, V]) Put(key K, value V) error {
 	}
 
 	// Traverse the rest of the linked list and check for dupes
-	for current.Next != nil {
+	for currentgs != nil {
 		if current.Value.Key == key {
 			return fmt.Errorf("Cannot put duplicated key")
 		} else {
