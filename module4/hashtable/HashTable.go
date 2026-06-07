@@ -32,21 +32,12 @@ func New[K string, V any]() *HashTable[K, V] {
 	}
 }
 
-func (h *HashTable[K, V]) Put(key string, value V) error {
+func (h *HashTable[K, V]) Put(key string, value V) {
 	// Determine bucket
 	keyHash := hash(key)
 	bucketNumber := keyHash % h.Capacity
 
 	current := h.Buckets[bucketNumber].Head
-
-	// Traverse the rest of the linked list and check for dupes
-	for current != nil {
-		if current.Value.Key == key {
-			return fmt.Errorf("Cannot put duplicated key")
-		} else {
-			current = current.Next
-		}
-	}
 
 	newHashNode := HashNode[string, V]{
 		Key:   key,
@@ -54,8 +45,18 @@ func (h *HashTable[K, V]) Put(key string, value V) error {
 		Hash:  keyHash,
 	}
 
+	// Traverse the rest of the linked list and check for dup keys in case of an update
+	for current != nil {
+		if current.Value.Key == key {
+			current.Value = newHashNode
+			return
+		} else {
+			current = current.Next
+		}
+	}
+
+	//New values are added to end
 	h.Buckets[bucketNumber].AddToEnd(newHashNode)
-	return nil
 }
 
 func (h *HashTable[K, V]) Get(key string) (V, error) {
@@ -86,7 +87,7 @@ func (h *HashTable[K, V]) Remove(key string) error {
 	found := false
 	deleteIndex := 0
 	for current != nil {
-		if current.Value.Hash == keyHash {
+		if current.Value.Hash == keyHash && current.Value.Key == key {
 			found = true
 			break
 		} else {
