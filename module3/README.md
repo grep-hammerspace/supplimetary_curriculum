@@ -6,7 +6,7 @@
 
 ## Solutions
 - Implementation of stack and queue can be found in `Stack.go` and `Queue.go` respectively under the `stacknqueue` package.
-- The function to check for parentheses is implemented in `parentheses.go`.
+- The function to check for parentheses is implemented in `main.go`.
 
 #### Sample output for parentheses check:
 ```
