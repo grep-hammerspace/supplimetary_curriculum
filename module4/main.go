@@ -35,12 +35,15 @@ func main() {
 	fmt.Printf(myMap.Stringify())
 	fmt.Printf("---------------------------------------------\n")
 
-	simpleExample := "Hello Hello Hello Fox Fox Fox Fence Fence Hill"
+	simpleExample := "Hello Hello,Hello - Fox - Fox Fox Fence Fence Hill."
 	fmt.Printf("Use HashTable to count words in '%s'\n", simpleExample)
 	fmt.Println(CountWordsInText(simpleExample))
 }
 
 func CountWordsInText(source string) string {
+	strings.ReplaceAll(source, ",", "")
+	strings.ReplaceAll(source, ".", "")
+	strings.ReplaceAll(source, "-", "")
 	sourceAsArray := strings.Split(source, " ")
 	wordCountMap := ht.New[string, int]()
 
