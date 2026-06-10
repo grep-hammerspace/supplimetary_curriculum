@@ -23,7 +23,7 @@ type HashNode[K string, V any] struct {
 
 func New[K string, V any]() *HashTable[K, V] {
 	var buckets []ll.LinkedList[HashNode[string, V]]
-	for i := 0; i < 16; i++ {
+	for range 16 {
 		buckets = append(buckets, ll.LinkedList[HashNode[string, V]]{})
 	}
 	return &HashTable[K, V]{
@@ -118,7 +118,7 @@ func (h *HashTable[K, V]) Stringify() string {
 		for current != nil {
 			buffer.Write([]byte(current.Value.Key))
 			buffer.Write([]byte(","))
-			buffer.Write([]byte(fmt.Sprint(current.Value)))
+			buffer.Write(fmt.Append(nil, current.Value))
 			buffer.Write([]byte("\n"))
 			current = current.Next
 		}

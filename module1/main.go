@@ -39,7 +39,7 @@ func main() {
 
 // Linear search - takes an array and returns index of target
 func linearSearch(arr []int, target int) int {
-	for i := 0; i < len(arr); i++ {
+	for i := range arr {
 		if arr[i] == target {
 			return i
 		}
@@ -71,7 +71,7 @@ func binarySearch(arr []int, target int) int {
 
 func produceSortedArray(size int) []int {
 	arr := make([]int, size)
-	for i := 0; i < size; i++ {
+	for i := range size {
 		arr[i] = i
 	}
 	return arr
