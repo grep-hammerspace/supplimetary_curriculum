@@ -55,8 +55,13 @@ func areBracketsBalanced(brackets string, runeMap map[rune]bracket, openCloseMap
 
 	// Key insight : You cant put a closing bracket on the stack
 
-	// Create a slice of the inputs and a stack to match them
+	// Create a slice of the inputs
 	bracketsAsSlice := []rune(brackets)
+	if len(bracketsAsSlice) == 0 {
+		return true
+	}
+
+	// create stack
 	stack := snq.Stack[bracket]{}
 
 	// Add first element manually
