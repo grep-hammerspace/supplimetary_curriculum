@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"unicode"
 
 	ht "github.com/grep-hammerspace/coding-curriculum/module4/hashtable"
 )
@@ -41,10 +42,13 @@ func main() {
 }
 
 func CountWordsInText(source string) string {
-	strings.ReplaceAll(source, ",", "")
-	strings.ReplaceAll(source, ".", "")
-	strings.ReplaceAll(source, "-", "")
-	sourceAsArray := strings.Split(source, " ")
+	source = strings.Map(func(r rune) rune {
+		if unicode.IsPunct(r) || unicode.IsSymbol(r) {
+			return ' '
+		}
+		return r
+	}, source)
+	sourceAsArray := strings.Fields(source)
 	wordCountMap := ht.New[string, int]()
 
 	for _, word := range sourceAsArray {
