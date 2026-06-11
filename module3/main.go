@@ -44,6 +44,7 @@ func main() {
 	fmt.Printf("{[(])} is balanced: %t\n", areBracketsBalanced("{[(])}", runeMappings, openCloseMappings))
 	fmt.Printf("{[(]]] is balanced: %t\n", areBracketsBalanced("{[(]]]", runeMappings, openCloseMappings))
 	fmt.Printf("}[](){ is balanced: %t\n", areBracketsBalanced("}[](){", runeMappings, openCloseMappings))
+	fmt.Printf("{] is balanced: %t\n", areBracketsBalanced("{]", runeMappings, openCloseMappings))
 }
 
 type bracket struct {
@@ -52,9 +53,6 @@ type bracket struct {
 }
 
 func areBracketsBalanced(brackets string, runeMap map[rune]bracket, openCloseMap map[bracket]bracket) bool {
-
-	// Key insight : You cant put a closing bracket on the stack
-
 	// Create a slice of the inputs
 	bracketsAsSlice := []rune(brackets)
 	if len(bracketsAsSlice) == 0 {

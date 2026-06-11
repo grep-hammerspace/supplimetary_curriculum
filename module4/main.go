@@ -50,7 +50,7 @@ func CountWordsInText(source string) string {
 	for _, word := range sourceAsArray {
 		currentWordCount, err := wordCountMap.Get(word)
 		if err != nil {
-			// Word already seen once
+			// First time we see the word
 			wordCountMap.Put(word, 1)
 		} else {
 			// It is already in the HashTable, put a new version with one added
