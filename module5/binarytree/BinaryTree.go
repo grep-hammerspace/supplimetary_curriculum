@@ -19,10 +19,6 @@ func New[T cmp.Ordered]() *BinaryTree[T] {
 }
 
 func (bt *BinaryTree[T]) Insert(value T) {
-	bt.insertHelper(value)
-}
-
-func (bt *BinaryTree[T]) insertHelper(value T) {
 	node := &TreeNode[T]{
 		Value: value,
 		Left:  nil,
@@ -30,21 +26,43 @@ func (bt *BinaryTree[T]) insertHelper(value T) {
 	}
 	if bt.Root == nil {
 		bt.Root = node
+		return
 	}
+
 	currentNode := bt.Root
 
 	for currentNode != nil {
 		if node.Value < currentNode.Value {
-			// Smaller so go left
+			if currentNode.Left == nil {
+				//Set the value of the next thing
+				currentNode.Left = node
+				return
+			}
 			currentNode = currentNode.Left
 		} else if node.Value > currentNode.Value {
-			// Bigger so go right
+			if currentNode.Right == nil {
+				currentNode.Right = node
+				return
+			}
 			currentNode = currentNode.Right
 		} else {
 			return
 		}
 	}
+}
 
-	currentNode := node
+func (bt *BinaryTree[T]) Search(target T) (found bool) {
+	currentNode := bt.Root
 
+	for currentNode != nil {
+		if target < currentNode.Value {
+			currentNode = currentNode.Left
+		} else if target > currentNode.Value {
+			currentNode = currentNode.Right
+		} else {
+			return true
+		}
+	}
+
+	return false
 }
