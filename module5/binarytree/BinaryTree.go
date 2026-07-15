@@ -89,3 +89,24 @@ func inOrderTraverseHelper[T cmp.Ordered](elements *[]T, currentNode *TreeNode[T
 		inOrderTraverseHelper(elements, currentNode.Right)
 	}
 }
+
+func (bt *BinaryTree[T]) PreOrderTraverse() []T {
+	elements := make([]T, 0)
+	currentNode := bt.Root
+	if currentNode != nil {
+		preOrderTraverseHelper(&elements, currentNode)
+	}
+
+	return elements
+}
+
+func preOrderTraverseHelper[T cmp.Ordered](elements *[]T, node *TreeNode[T]) {
+	if node == nil {
+		return
+	}
+
+	*elements = append(*elements, node.Value)
+
+	preOrderTraverseHelper(elements, node.Left)
+	preOrderTraverseHelper(elements, node.Right)
+}
