@@ -59,6 +59,7 @@ func TestInOrderTraverse(t *testing.T) {
 		t.Errorf("InOrderTraverse failed, expected 4 elements, got %d", len(sortedElements))
 	}
 
+	// Expected is [3,5,7,8]
 	expectedElementOrder := make([]int, 4)
 	expectedElementOrder[0] = 3
 	expectedElementOrder[1] = 5
@@ -71,4 +72,27 @@ func TestInOrderTraverse(t *testing.T) {
 		}
 	}
 
+}
+
+func TestInOrderTraverseOnEmptyTree(t *testing.T) {
+	bt := New[int]()
+	sortedElements := bt.InOrderTraverse()
+
+	if len(sortedElements) != 0 {
+		t.Errorf("An empty tree should return an empty slice of sorted elements")
+	}
+}
+
+func TestInOrderTraverseOnTreeWithJustRootNode(t *testing.T) {
+	bt := New[int]()
+	bt.Insert(5)
+
+	sortedElements := bt.InOrderTraverse()
+	if len(sortedElements) != 1 {
+		t.Errorf("Tree with one element should have a list of sorted elements with length 1")
+	}
+
+	if sortedElements[0] != 5 {
+		t.Errorf("Invalid root element, should be 5")
+	}
 }

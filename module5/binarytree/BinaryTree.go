@@ -72,18 +72,18 @@ func (bt *BinaryTree[T]) InOrderTraverse() []T {
 
 	currentNode := bt.Root
 
-	for currentNode != nil {
-		inOrderTraverseHelper(elements, currentNode)
+	if currentNode != nil {
+		inOrderTraverseHelper(&elements, currentNode)
 	}
 
 	return elements
 }
 
-func inOrderTraverseHelper[T cmp.Ordered](elements []T, currentNode *TreeNode[T]) {
+func inOrderTraverseHelper[T cmp.Ordered](elements *[]T, currentNode *TreeNode[T]) {
 	if currentNode.Left != nil {
 		inOrderTraverseHelper(elements, currentNode.Left)
 	}
-	elements = append(elements, currentNode.Value)
+	*elements = append(*elements, currentNode.Value)
 
 	if currentNode.Right != nil {
 		inOrderTraverseHelper(elements, currentNode.Right)
