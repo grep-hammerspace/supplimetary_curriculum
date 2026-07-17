@@ -14,7 +14,17 @@ func main() {
 	binarytree.Insert(5)
 	binarytree.Insert(6)
 
-	sortedElements := binarytree.PreOrderTraverse()
+	//       4
+	//      / \
+	//     3   5
+	//          \
+	//           6
+
+	preorderedElements := binarytree.PreOrderTraverse()
+	sortedElements := binarytree.InOrderTraverse()
+	postorderedElements := binarytree.PostOrderTraverse()
 
 	fmt.Println(sortedElements)
+	fmt.Println(preorderedElements)
+	fmt.Println(postorderedElements)
 }

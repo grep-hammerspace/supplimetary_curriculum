@@ -110,3 +110,25 @@ func preOrderTraverseHelper[T cmp.Ordered](elements *[]T, node *TreeNode[T]) {
 	preOrderTraverseHelper(elements, node.Left)
 	preOrderTraverseHelper(elements, node.Right)
 }
+
+func (bt *BinaryTree[T]) PostOrderTraverse() []T {
+
+	elements := make([]T, 0)
+
+	if bt.Root != nil {
+		postOrderTraverseHelper(&elements, bt.Root)
+	}
+
+	return elements
+}
+
+func postOrderTraverseHelper[T cmp.Ordered](elements *[]T, node *TreeNode[T]) {
+
+	if node == nil {
+		return
+	}
+	*elements = append(*elements, node.Value)
+
+	postOrderTraverseHelper(elements, node.Right)
+	postOrderTraverseHelper(elements, node.Left)
+}
