@@ -10,7 +10,7 @@ import (
 // Define the adjacency matrix itself as Map<T comparable, []bool]> where we flip elements to true if there is connection between nodes
 
 type Graph[T cmp.Ordered] struct {
-	Size int
+	Size  int
 	Nodes []T
 	Edges map[T][]bool
 }
@@ -19,7 +19,7 @@ func New[T cmp.Ordered](size int) *Graph[T] {
 
 	edges := map[T][]bool{}
 	graph := Graph[T]{
-		Size: size,
+		Size:  size,
 		Nodes: []T{},
 		Edges: edges,
 	}
@@ -31,25 +31,34 @@ func (graph *Graph[T]) AddNode(value T) {
 	graph.Edges[value] = make([]bool, graph.Size)
 }
 
-func (graph *Graph[T]) AddEdge(from, to T) error err {
+func (graph *Graph[T]) AddEdge(from, to T) error {
 
-	var indexFrom, indexTo int
+	var indexFrom int
+	//var indexTo int
+
 	for i, node := range graph.Nodes {
 		if node == from {
 			indexFrom = i
 		}
 
-		if node == to {
-			indexTo = i
-        }
+		//if node == to {
+		//	indexTo = i
+		//}
 	}
 
-	if indexFrom == nil or indexTo == nil {
-		return errors.New("unbable to create edge as a node is missing"
-	}
+	//TODO : Figure out how to do some of this sanitation stuff
+	//if indexFrom != nil || indexTo == nil {
+	//	return fmt.Errorf("unable to create edge as a node is missing")
+	//}
 
 	graph.Edges[to][indexFrom] = true
 
+	return nil
 }
 
-func (graph *Graph[T]) printAdjacencyMatrix() {}
+func (graph *Graph[T]) PrintAdjacencyMatrix() {
+
+	fmt.Println(graph.Nodes)
+
+	fmt.Println(graph.Edges)
+}
