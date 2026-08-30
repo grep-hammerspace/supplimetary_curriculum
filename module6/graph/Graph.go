@@ -26,9 +26,13 @@ func New[T cmp.Ordered](size int) *Graph[T] {
 	return &graph
 }
 
-func (graph *Graph[T]) AddNode(value T) {
+func (graph *Graph[T]) AddNode(value T) error {
+	if len(graph.Nodes) == graph.Size {
+		return fmt.Errorf("Max size of graph is %d", graph.Size)
+	}
 	graph.Nodes = append(graph.Nodes, value)
 	graph.Edges[value] = make([]bool, graph.Size)
+	return nil
 }
 
 func (graph *Graph[T]) AddEdge(from, to T) error {
@@ -62,6 +66,24 @@ func (graph *Graph[T]) AddEdge(from, to T) error {
 	return nil
 }
 
+func (graph *Graph[T]) GetNeighbors(value T) ([]T, error) {
+
+	// make sure the node whose neighbours we want actually exist
+	if graph.Edges[value] == nil {
+		return nil, fmt.Errorf("Unable to get neighbors for invalid node %v", value)
+	}
+	edgesOnTargetNode := graph.Edges[value]
+	var neighbours []T
+
+	for i, nodeExists := range edgesOnTargetNode {
+		if nodeExists {
+			neighbours = append(neighbours, graph.Nodes[i])
+		}
+	}
+
+	return neighbours, nil
+}
+
 func (graph *Graph[T]) RemoveEdge(from, to T) error {
 
 	indexFrom := -1
@@ -81,9 +103,44 @@ func (graph *Graph[T]) RemoveEdge(from, to T) error {
 		return fmt.Errorf("unable to remove edge, invalid nodes")
 	}
 
-	// Remove "edge " by setting value to false, set both across the diagnoal
+	// Remove "edge " by setting value to false, set both across the diagonal
 	graph.Edges[to][indexFrom] = false
 	graph.Edges[from][indexTo] = false
+
+	return nil
+}
+
+func (graph *Graph[T]) DepthFirstSearch(start T) {
+
+	// The actual thing you want to do is to visit each node, and recursively call to its neighbours
+	// For each node, we keep going until every one of its neighbours (for loop) has been visited
+
+	//We use a map[T} for O(1) memebership checks, and string because its default value is nil, so membership is checked as visited[node] == nil or not
+	visited := map[T]struct{}{}
+	dfsHelper(start, graph, visited)
+}
+
+func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited map[T]struct{}) error {
+
+	neighbours, err := graph.GetNeighbors(node)
+
+	if err != nil {
+		return err
+	}
+
+	for _, node := range neighbours {
+
+		if _, hasBeenVisited := visited[node]; !hasBeenVisited { // ie we havent been to this node before
+			err := dfsHelper[T](node, graph, visited)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// If we get here, when a node has no more neigbours that have never been added visited, we mark it as visited
+	visited[node] = struct{}{}
+	fmt.Printf("%s, ", node)
 
 	return nil
 }

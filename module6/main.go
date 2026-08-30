@@ -14,5 +14,5 @@ func main() {
 	myGraph.AddEdge(5, 1)
 	myGraph.AddEdge(5, 2)
 
-	myGraph.PrintAdjacencyMatrix()
+	myGraph.DepthFirstSearch(5)
 }
