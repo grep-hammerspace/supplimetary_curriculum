@@ -3,6 +3,8 @@ package graph
 import (
 	"cmp"
 	"fmt"
+	"maps"
+	"slices"
 )
 
 // Graph represented internally as adjacency matrix.
@@ -110,7 +112,7 @@ func (graph *Graph[T]) RemoveEdge(from, to T) error {
 	return nil
 }
 
-func (graph *Graph[T]) DepthFirstSearch(start T) {
+func (graph *Graph[T]) DepthFirstSearch(start T) []T {
 
 	// The actual thing you want to do is to visit each node, and recursively call to its neighbours
 	// For each node, we keep going until every one of its neighbours (for loop) has been visited
@@ -118,6 +120,8 @@ func (graph *Graph[T]) DepthFirstSearch(start T) {
 	//We use a map[T} for O(1) memebership checks, and string because its default value is nil, so membership is checked as visited[node] == nil or not
 	visited := map[T]struct{}{}
 	dfsHelper(start, graph, visited)
+
+	return slices.Collect(maps.Keys(visited))
 }
 
 func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited map[T]struct{}) error {
@@ -140,7 +144,7 @@ func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited map[T]struct{}) e
 
 	// If we get here, when a node has no more neigbours that have never been added visited, we mark it as visited
 	visited[node] = struct{}{}
-	fmt.Printf("%s, ", node)
+	fmt.Println(node)
 
 	return nil
 }

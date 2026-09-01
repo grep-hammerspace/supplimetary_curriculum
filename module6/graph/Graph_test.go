@@ -2,6 +2,7 @@ package graph
 
 import (
 	"fmt"
+	"slices"
 	"testing"
 )
 
@@ -58,6 +59,35 @@ func TestAddNodesIntoEmptyBinaryTree(t *testing.T) {
 	}
 }
 
+func TestGetNeighboursGetsNeighboursForGivenNode(t *testing.T) {
+	graph := New[string](5)
+
+	graph.AddNode("A")
+	graph.AddNode("B")
+	graph.AddNode("C")
+	graph.AddNode("D")
+	graph.AddNode("E")
+
+	graph.AddEdge("A", "B")
+	graph.AddEdge("A", "C")
+	graph.AddEdge("A", "D")
+	graph.AddEdge("A", "E")
+
+	graph.PrintAdjacencyMatrix()
+
+	neighbours, err := graph.GetNeighbors("A")
+	fmt.Println(neighbours)
+
+	if err != nil {
+		t.Errorf("Error while getting neighbours")
+	}
+
+	if len(neighbours) != 4 {
+		t.Errorf("Expected 4 neighbours for A, got %d", len(neighbours))
+	}
+
+}
+
 func TestRemoveEdgeFromGraph(t *testing.T) {
 
 	graph := New[string](2)
@@ -94,4 +124,29 @@ func TestRemoveEdgeFromGraph(t *testing.T) {
 
 	}
 
+}
+
+func TestDepthFirstSearch(t *testing.T) {
+	graph := New[string](5)
+
+	graph.AddNode("A")
+	graph.AddNode("B")
+	graph.AddNode("C")
+
+	graph.AddEdge("A", "B")
+	graph.AddEdge("B", "C")
+
+	graph.PrintAdjacencyMatrix()
+
+	// We expect BFS to give us C, B, A
+	visited := graph.DepthFirstSearch("A")
+
+	if len(visited) != 3 {
+		t.Errorf("Expected 3 nodes to be visited in DFS, got %d", len(visited))
+	}
+
+	if !slices.Equal(visited, []string{"C", "B", "A"}) {
+		t.Errorf("Incorrect order for DFS, expected 'C','B','A'")
+
+	}
 }
