@@ -3,8 +3,6 @@ package graph
 import (
 	"cmp"
 	"fmt"
-	"maps"
-	"slices"
 )
 
 // Graph represented internally as adjacency matrix.
@@ -118,13 +116,17 @@ func (graph *Graph[T]) DepthFirstSearch(start T) []T {
 	// For each node, we keep going until every one of its neighbours (for loop) has been visited
 
 	//We use a map[T} for O(1) memebership checks, and string because its default value is nil, so membership is checked as visited[node] == nil or not
-	visited := map[T]struct{}{}
-	dfsHelper(start, graph, visited)
+	visited := []T{}
+	seen := map[T]struct{}{}
+	dfsHelper(start, graph, &visited, seen)
 
-	return slices.Collect(maps.Keys(visited))
+	return visited
 }
 
-func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited map[T]struct{}) error {
+func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited *[]T, seen map[T]struct{}) error {
+
+	// Add current node to the list of seen nodes, so we dont call dfsHelper on it again
+	seen[node] = struct{}{}
 
 	neighbours, err := graph.GetNeighbors(node)
 
@@ -133,17 +135,16 @@ func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited map[T]struct{}) e
 	}
 
 	for _, node := range neighbours {
-
-		if _, hasBeenVisited := visited[node]; !hasBeenVisited { // ie we havent been to this node before
-			err := dfsHelper[T](node, graph, visited)
+		if _, seenBefore := seen[node]; !seenBefore { // ie we havent been to this node before
+			err := dfsHelper[T](node, graph, visited, seen)
 			if err != nil {
 				return err
 			}
 		}
 	}
 
-	// If we get here, when a node has no more neigbours that have never been added visited, we mark it as visited
-	visited[node] = struct{}{}
+	// If we get here, when a node has no more neighbours that have never been seen, we mark it as visited
+	*visited = append(*visited, node)
 	fmt.Println(node)
 
 	return nil

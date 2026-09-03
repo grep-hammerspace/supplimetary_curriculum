@@ -127,26 +127,33 @@ func TestRemoveEdgeFromGraph(t *testing.T) {
 }
 
 func TestDepthFirstSearch(t *testing.T) {
-	graph := New[string](5)
+	graph := New[string](6)
 
 	graph.AddNode("A")
 	graph.AddNode("B")
 	graph.AddNode("C")
+	graph.AddNode("D")
+	graph.AddNode("E")
+	graph.AddNode("F")
 
 	graph.AddEdge("A", "B")
 	graph.AddEdge("B", "C")
+	graph.AddEdge("B", "D")
+	//graph.AddEdge("D", "E")
+	//graph.AddEdge("D", "F")
 
 	graph.PrintAdjacencyMatrix()
 
-	// We expect BFS to give us C, B, A
+	// We expect BFS to give us C,D,B, A - Expect to traverse from A down to B, then inverse input order visiting for any node who has more than one child
+	// In this example we add node C, then node D, and, getNeighbours wil return ["A","C","D"], we will have seen A already so we first call dfsHelper for C,
+	// whose only Neighbour is B, which we will have seen, so we add C to visited, then Dm then back up the stack for B, nad A
 	visited := graph.DepthFirstSearch("A")
 
 	if len(visited) != 3 {
 		t.Errorf("Expected 3 nodes to be visited in DFS, got %d", len(visited))
 	}
 
-	if !slices.Equal(visited, []string{"C", "B", "A"}) {
-		t.Errorf("Incorrect order for DFS, expected 'C','B','A'")
-
+	if !slices.Equal(visited, []string{"C", "D", "B", "A"}) {
+		t.Errorf("Incorrect order for DFS, expected 'C','D','B','A'")
 	}
 }
