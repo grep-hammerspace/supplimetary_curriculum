@@ -150,6 +150,22 @@ func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited *[]T, seen map[T]
 	return nil
 }
 
+func (graph *Graph[T]) BreadthFirstSearch(start T) []T {
+
+	visited := &[]T{}
+	seen := map[T]struct{}{}
+
+	*visited = append(*visited, start)
+	seen[start] = struct{}{}
+
+	// for each node, we get its neighbours, we add it to a queue, add its unseen neighbours to the queue (will make for a dfs?)
+	// call sequentially? how do we get past the first set of neighbours,  just call helpre over and over until no neighbours?
+	// in that case, how will ordering work?
+	return nil
+}
+
+func bfsHelper() {}
+
 // PrintAdjacencyMatrix writes the matrix as a labelled grid, one row per node.
 // Rows are the "from" node and columns the "to" node, matching AddEdge(from, to).
 func (graph *Graph[T]) PrintAdjacencyMatrix() {

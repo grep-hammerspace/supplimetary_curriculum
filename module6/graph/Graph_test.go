@@ -127,6 +127,7 @@ func TestRemoveEdgeFromGraph(t *testing.T) {
 }
 
 func TestDepthFirstSearch(t *testing.T) {
+	//I think this is correct behaviour, its going all teh way down, on each branch, then by insertion order. We'll say what an LLM says
 	graph := New[string](6)
 
 	graph.AddNode("A")
