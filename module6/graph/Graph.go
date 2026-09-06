@@ -3,6 +3,9 @@ package graph
 import (
 	"cmp"
 	"fmt"
+	"slices"
+
+	snq "github.com/grep-hammerspace/coding-curriculum/module3/stacknqueue"
 )
 
 // Graph represented internally as adjacency matrix.
@@ -150,21 +153,60 @@ func dfsHelper[T cmp.Ordered](node T, graph *Graph[T], visited *[]T, seen map[T]
 	return nil
 }
 
-func (graph *Graph[T]) BreadthFirstSearch(start T) []T {
-
-	visited := &[]T{}
+func (graph *Graph[T]) BreadthFirstSearch(start T) ([]T, error) {
 	seen := map[T]struct{}{}
+	queue := snq.Queue[T]{}
+	visited := []T{}
 
-	*visited = append(*visited, start)
+	// Add the first element
+	queue.Enqueue(start)
 	seen[start] = struct{}{}
 
-	// for each node, we get its neighbours, we add it to a queue, add its unseen neighbours to the queue (will make for a dfs?)
-	// call sequentially? how do we get past the first set of neighbours,  just call helpre over and over until no neighbours?
-	// in that case, how will ordering work?
-	return nil
+	for queue.Size() != 0 {
+		node, found := queue.Deque()
+		if !found {
+			// the queue is empty
+			break
+		}
+		visited = append(visited, node)
+
+		neighbours, err := graph.GetNeighbors(node)
+
+		if err != nil {
+			return nil, err
+		}
+
+		for _, neighbour := range neighbours {
+			if _, seenBefore := seen[neighbour]; !seenBefore {
+				seen[neighbour] = struct{}{}
+				queue.Enqueue(neighbour)
+			}
+		}
+	}
+
+	return visited, nil
 }
 
-func bfsHelper() {}
+func (graph *Graph[T]) FindPathBetween(start, end T) []T {
+	bfsResult, err := graph.BreadthFirstSearch(start)
+
+	if err != nil {
+		return []T{}
+	}
+	targetIndex := -1
+
+	if slices.Contains(bfsResult, end) {
+		for i, node := range bfsResult {
+			if node == end {
+				targetIndex = i
+			}
+		}
+		if targetIndex == -1 {
+			return []T{}
+		}
+	}
+	return bfsResult[:targetIndex+1]
+}
 
 // PrintAdjacencyMatrix writes the matrix as a labelled grid, one row per node.
 // Rows are the "from" node and columns the "to" node, matching AddEdge(from, to).
